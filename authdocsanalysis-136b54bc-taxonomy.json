@@ -1,0 +1,475 @@
+{
+  "id": "359223775759d464",
+  "owner": "authdocsanalysis-136b54bc-ixp",
+  "name": "authdocsanalysis-136b54bc",
+  "title": "AuthDocsAnalysis",
+  "description": "",
+  "created": "2026-04-10T20:21:50.832189Z",
+  "last_modified": "2026-04-15T16:04:35.156010Z",
+  "model_family": "transformer-english",
+  "source_ids": [
+    "b4ea93473ee8b341",
+    "e015148c553926f7"
+  ],
+  "has_sentiment": true,
+  "limited_access": false,
+  "entity_defs": [
+    {
+      "id": "c8aceb8c85990acd",
+      "name": "Boolean",
+      "title": "Boolean",
+      "inherits_from": [
+        "0000000000000046"
+      ],
+      "trainable": true,
+      "color": 0,
+      "_entity_def_flags": [],
+      "instructions": "Use to represent boolean values in text."
+    },
+    {
+      "id": "630651f15ee728b8",
+      "name": "Date",
+      "title": "Date",
+      "inherits_from": [
+        "0000000000000007"
+      ],
+      "trainable": true,
+      "color": 1,
+      "_entity_def_flags": [],
+      "instructions": "Use to represent dates in text."
+    },
+    {
+      "id": "856364449832b696",
+      "name": "Exact Text",
+      "title": "Exact Text",
+      "inherits_from": [],
+      "trainable": true,
+      "color": 2,
+      "_entity_def_flags": [
+        "appears_verbatim"
+      ],
+      "instructions": "Use to represent text that appears verbatim in text."
+    },
+    {
+      "id": "4df1983cf4aebeb4",
+      "name": "Inferred Text",
+      "title": "Inferred Text",
+      "inherits_from": [],
+      "trainable": true,
+      "color": 3,
+      "_entity_def_flags": [],
+      "instructions": "Use for text that might not appear verbatim in the text."
+    },
+    {
+      "id": "e968530db8b467e4",
+      "name": "Monetary Quantity",
+      "title": "Monetary Quantity",
+      "inherits_from": [
+        "0000000000000006"
+      ],
+      "trainable": true,
+      "color": 4,
+      "_entity_def_flags": [],
+      "instructions": "Use to represent monetary values in text."
+    },
+    {
+      "id": "1d6676dbc09d7f86",
+      "name": "Number",
+      "title": "Number",
+      "inherits_from": [
+        "0000000000000044"
+      ],
+      "trainable": true,
+      "color": 5,
+      "_entity_def_flags": [],
+      "instructions": "Use to represent amounts or quantities in text."
+    }
+  ],
+  "general_fields": [],
+  "label_groups": [
+    {
+      "name": "default",
+      "label_defs": [
+        {
+          "name": "Disclosure Info",
+          "id": "580ffa8e21a19ed7",
+          "moon_form": [
+            {
+              "field_id": "771ef1e0c2ba8240",
+              "id": "856364449832b696",
+              "field_type_id": "856364449832b696",
+              "kind": "Exact Text",
+              "name": "Identity of Disclosing Party",
+              "instructions": "Extract the specific name of the healthcare facility, clinic, physician, or organization authorized to RELEASE or DISCLOSE the patient's medical records (the Disclosing Party).\n\nCarefully scan the document using this priority logic:\n\nAddressee/Header: Look for the primary facility named at the very top of the document, often in the letterhead or explicitly listed next to 'To:' or 'Facility Releasing Information'.\n\nAuthorization Clause: Look for the proper noun entity in phrases like 'I authorize [Discloser] to release...' or 'consent for [Discloser] to disclose...'.\n\nSTRICT EXCLUSIONS AND RULES:\n\nThe Recipient Trap: You MUST NOT extract the name of the party authorized to RECEIVE the records. Carefully distinguish between who is sending (the Discloser) and who is receiving (the Recipient).\n\nGeneric Terms: Extract the specific proper noun of the facility or doctor. Ignore generic boilerplate text like 'my health care provider', 'the hospital', or 'the undersigned' if a specific facility name is available elsewhere on the form.\n\nDo NOT extract the patient's name.",
+              "rule_set": null
+            },
+            {
+              "field_id": "2516ac5379221b9d",
+              "id": "630651f15ee728b8",
+              "field_type_id": "630651f15ee728b8",
+              "kind": "Date",
+              "name": "Date of Request",
+              "instructions": "Extract the date the authorization form was signed, initiated, or requested by the patient or representative.",
+              "rule_set": null
+            },
+            {
+              "field_id": "b9d59a506f3ce72d",
+              "id": "630651f15ee728b8",
+              "field_type_id": "630651f15ee728b8",
+              "kind": "Date",
+              "name": "Date Needed",
+              "instructions": "Extract the target date, deadline, or 'needed by' date for when the records must be delivered to the recipient.",
+              "rule_set": null
+            }
+          ]
+        },
+        {
+          "name": "Info Requested",
+          "id": "fe5dccfa05001c5c",
+          "moon_form": [
+            {
+              "field_id": "21ce31c8d14b5301",
+              "id": "856364449832b696",
+              "field_type_id": "856364449832b696",
+              "kind": "Exact Text",
+              "name": "Requested Info",
+              "instructions": "Extract all specific types of general medical records, documents, or imaging explicitly selected for release. STRICT RULES: 1. Only include standard records (e.g., X-Rays, Lab Results, History, Discharge Summaries). 2. STRICTLY IGNORE any highly sensitive 'Special Requests' or protected health information (e.g., HIV/AIDS, Mental Health, Substance Abuse). 3. Return a comma-separated list of selected items. If none, return null.",
+              "rule_set": null
+            },
+            {
+              "field_id": "e5d9677cbbef1388",
+              "id": "856364449832b696",
+              "field_type_id": "856364449832b696",
+              "kind": "Exact Text",
+              "name": "Special Request",
+              "instructions": "Extract all explicitly selected highly sensitive, specially protected, or 'Special Request' medical records authorized for release. STRICT RULES: 1. Only include protected categories (e.g., HIV/AIDS test results, Mental Health records, Substance Abuse treatment, Genetic testing). 2. STRICTLY IGNORE standard general medical records like X-rays or basic labs. 3. Return a comma-separated list of selected items. If none, return null.",
+              "rule_set": null
+            },
+            {
+              "field_id": "4012c015accd1ea2",
+              "id": "4df1983cf4aebeb4",
+              "field_type_id": "4df1983cf4aebeb4",
+              "kind": "Inferred Text",
+              "name": "Auth Expiry Date",
+              "instructions": "Determine the date this medical authorization expires by following this strict priority:\n\n1. First, look for an explicitly filled-in or written expiration date provided by the patient (e.g., 'will expire on [Date]'). If an exact date is written, extract it.\n\n2. If no explicit date is filled in, scan the document's legal clauses or fine print for a default expiration timeframe (e.g., 'expires one year from the date signed', 'valid for 6 months', 'expires in 90 days').\n\n3. If a default clause exists, locate the Date of Signature (or Date of Request). Calculate the exact expiration date by adding the default timeframe to the anchor date, and return that calculated date.\n\n4. CONDITIONAL CLAUSES: If the document provides a calculable timeframe alongside an abstract event (e.g., 'expires upon completion of review OR one year from signature, whichever comes first'), you MUST ignore the abstract event and calculate the exact date using the calculable timeframe.\n\nThe date outputted must be in YYYY-MM-DD format\n\nIf neither an explicit date nor a default clause exists, return null.",
+              "rule_set": null
+            },
+            {
+              "field_id": "8ebcad10795a3f9d",
+              "id": "856364449832b696",
+              "field_type_id": "856364449832b696",
+              "kind": "Exact Text",
+              "name": "PHI to be disclosed",
+              "instructions": "Scan the document for all medical records, documents, imaging, and highly sensitive health information authorized for release. Your objective is to extract a comprehensive, unified list of all requested items.\n\nCarefully evaluate how the document grants authorization and apply the correct logic:\n\n1. Checkbox Structure (Opt-In): Extract any standard records (e.g., MRI, X-Rays, Lab results, History) AND any sensitive protected records (e.g., Mental Health, Substance Abuse, HIV/AIDS) that are explicitly checked or marked. Strictly ignore any unchecked items.\n\n2. Blanket Clause Structure (Opt-Out): If the document uses a paragraph stating 'This authorization includes disclosure of...' followed by a list of items, extract ALL items listed in that sentence, MINUS any categories explicitly written in an 'exceptions' or 'exclude' section.\n\nSTRICT RULES:\n\n- Return a single, comma-separated list of all authorized items.\n\n- Do not include unselected boilerplate text.\n\n- If absolutely no records or categories are authorized or checked, return null.",
+              "rule_set": null
+            },
+            {
+              "field_id": "d4266ee9c88029e8",
+              "id": "c8aceb8c85990acd",
+              "field_type_id": "c8aceb8c85990acd",
+              "kind": "Boolean",
+              "name": "Right to Revoke",
+              "instructions": "Determine if the document explicitly outlines the patient's right to cancel, withdraw, or revoke this authorization.\n\nScan the legal boilerplate, terms and conditions, or patient rights sections for phrases such as 'right to revoke', 'may cancel this authorization', 'withdraw consent', or instructions on how to submit a revocation request.\n\nReturn 'True' if any clause acknowledging the patient's ability to revoke the authorization is present anywhere in the document.\nReturn 'False' ONLY if the document completely lacks any mention of the patient's right or ability to revoke the authorization.",
+              "rule_set": null
+            }
+          ]
+        },
+        {
+          "name": "Patient Details",
+          "id": "e222c6eddd5669e4",
+          "moon_form": [
+            {
+              "field_id": "ea0fc4ddb293c700",
+              "id": "856364449832b696",
+              "field_type_id": "856364449832b696",
+              "kind": "Exact Text",
+              "name": "Name",
+              "instructions": "Extract the full name of the patient whose medical records are being authorized for release. Do not confuse this with the receiving party.",
+              "rule_set": null
+            },
+            {
+              "field_id": "b003a3ddeaff274e",
+              "id": "630651f15ee728b8",
+              "field_type_id": "630651f15ee728b8",
+              "kind": "Date",
+              "name": "DOB",
+              "instructions": "Extract the patient's Date of Birth.",
+              "rule_set": null
+            },
+            {
+              "field_id": "d35e37cb0313d66e",
+              "id": "856364449832b696",
+              "field_type_id": "856364449832b696",
+              "kind": "Exact Text",
+              "name": "Address",
+              "instructions": "Extract the patient's full residential address. Include the street, city, state, and zip code.",
+              "rule_set": null
+            },
+            {
+              "field_id": "6ede88e26c268ca3",
+              "id": "856364449832b696",
+              "field_type_id": "856364449832b696",
+              "kind": "Exact Text",
+              "name": "Contact Number",
+              "instructions": "Extract the patient's primary contact phone number from the patient demographics section.\n\nSTRICT RULES:\n\n1. Semantic Anchor: The number MUST be directly associated with labels such as 'Primary Phone', 'Cell', 'Mobile', 'Home Phone', 'Daytime Ph', or 'Tel'.\n\n2. Priority Resolution: If multiple phone numbers are provided (e.g., both a Home and a Work number), extract the one explicitly marked as 'Primary'. If none are marked, prioritize in this order: 1) Cell/Mobile, 2) Home, 3) Daytime/Work.\n\n3. Format Constraint: The extracted value must mathematically and visually represent a standard phone number (e.g., 10 digits, formatted as (XXX) XXX-XXXX or XXX-XXX-XXXX).\n\n4. STRICT EXCLUSIONS: You MUST completely ignore numbers associated with 'Disability ID', 'SSN', 'Social Security', 'Member ID', 'Medicare', 'Medicaid', or 'Patient Account Number'.\n\n5. Output: Return only the requested phone number. If no valid phone number is explicitly provided, return null.",
+              "rule_set": null
+            },
+            {
+              "field_id": "d679bffc946487d8",
+              "id": "c8aceb8c85990acd",
+              "field_type_id": "c8aceb8c85990acd",
+              "kind": "Boolean",
+              "name": "Is Patient Signature Present",
+              "instructions": "Analyze the designated signature block for the 'Patient or Representative'. Your objective is strictly to determine if the document has been signed.\n\nReturn 'True' ONLY if you detect a distinct handwritten mark, cursive handwriting, squiggles, or an official digital e-signature stamp physically present on the signature line.\n\nReturn 'False' under ALL of the following conditions:\n\n- The signature line is blank.\n\n- The space contains only the letter 'X' or 'Sign Here' indicating where to sign.\n\n- The space contains ONLY standard typed or printed text (do not confuse the typed printed name with a handwritten signature).\n\nEvaluate strictly on the presence of a signature mark, not the presence of a typed name.",
+              "rule_set": null
+            },
+            {
+              "field_id": "940d5c4807af0fab",
+              "id": "630651f15ee728b8",
+              "field_type_id": "630651f15ee728b8",
+              "kind": "Date",
+              "name": "Signature Date",
+              "instructions": "Extract the date written immediately next to or below the patient's or representative's signature, indicating the exact date the authorization form was signed.",
+              "rule_set": null
+            },
+            {
+              "field_id": "999ce90aed28f53a",
+              "id": "4df1983cf4aebeb4",
+              "field_type_id": "4df1983cf4aebeb4",
+              "kind": "Inferred Text",
+              "name": "Printed Name of Signatory",
+              "instructions": "Examine the signature block at the bottom of the document. Locate the designated space or line for the typed or printed name of the person authorizing the document, typically located near the signature line.\n\nFollow this strict priority:\n\n1. If a clearly typed or printed name is present on or immediately next to the signature line, extract that printed value.\n\n2. If there is no printed name and only a handwritten signature is present, transcribe the handwritten ink to the best of your ability.\n\n3. If the specific space for the printed name is physically blank, you must return null, even if surrounding fields in the signature block are filled.\"\n\nReturn only the text in the signature field, and signature field only.",
+              "rule_set": null
+            },
+            {
+              "field_id": "5aa8244ab9faecde",
+              "id": "856364449832b696",
+              "field_type_id": "856364449832b696",
+              "kind": "Exact Text",
+              "name": "SSN",
+              "instructions": "Scan the patient details section for the individual's Social Security Number. Look for explicit labels such as 'Social Security Number', 'SSN', 'Social', or 'SS#'.\n\nExtract the value by applying the following strict logic:\n\nFull SSN: If a full 9-digit sequence is provided (with or without hyphens, e.g., XXX-XX-XXXX or XXXXXXXXX), extract the exact value.\n\nPartial SSN (Last 4): If the document explicitly asks for or provides only the 'Last 4 digits' (e.g., XXX-XX-1234 or just 1234), extract ONLY those 4 digits.\n\nSTRICT EXCLUSIONS AND RULES:\n\nThe Block-List: You MUST NOT extract the Medical Record Number (MRN), Telephone Number, Date of Birth, Account Number, or 9-digit Zip Codes (Zip+4).\n\nPattern Rejection: Do not extract a 10-digit phone number and mistake it for an SSN.\n\nIf the field is blank, marked as 'Refused', 'N/A', or 'On File', you must return null. Do not attempt to guess or substitute other numeric values.",
+              "rule_set": null
+            },
+            {
+              "field_id": "8a38e348788f8f25",
+              "id": "856364449832b696",
+              "field_type_id": "856364449832b696",
+              "kind": "Exact Text",
+              "name": "MRN",
+              "instructions": "Scan the patient details section for the individual's Medical Record Number. This is typically a unique numeric or alphanumeric sequence explicitly labeled as 'MRN', 'Medical Record #', 'Record Number', 'Patient ID', or 'Clinic #'. Extract ONLY the exact value associated with this label.\n\nSTRICT EXCLUSIONS AND RULES:\n\nThe Block-List: You MUST NOT extract the Social Security Number (SSN), Telephone Number, Date of Birth, Zip Code, or National Provider Identifier (NPI).\n\nPattern Rejection: If a number is formatted with hyphens like a standard SSN (e.g., XXX-XX-XXXX) or formatted as a standard 10-digit phone number, completely ignore it.\n\nAccount Numbers: Do NOT extract the billing 'Account Number' or 'Acct #' unless the document explicitly uses it interchangeably with the MRN.\n\nIf no value is explicitly labeled as the MRN, Record Number, or Patient ID, you must return null. Do not attempt to guess or substitute other numeric values.",
+              "rule_set": null
+            }
+          ]
+        }
+      ],
+      "label_collection_name": null,
+      "trainable": true,
+      "hidden": false,
+      "instructions": "Analyze the provided 'Authorization for Release of Medical Information' form. Your objective is to accurately extract three core categories of information:\n\n1. Patient Details: Identifying demographic and contact information of the individual authorizing the medical release.\n\n2. Recipient/Requester Details: The name, facility, and contact information of the party authorized to receive the medical records.\n\n3. Requested Information: The specific types of medical records, imaging, procedure notes, treatment dates, and delivery formats explicitly selected or checked for release.\n\nFocus strictly on user-provided values, checked boxes, and written dates. Disregard general legal disclaimers, facility footers, and non-discrimination policies."
+    }
+  ],
+  "label_defs": [
+    {
+      "name": "Disclosure Info",
+      "id": "580ffa8e21a19ed7",
+      "moon_form": [
+        {
+          "field_id": "771ef1e0c2ba8240",
+          "id": "856364449832b696",
+          "field_type_id": "856364449832b696",
+          "kind": "Exact Text",
+          "name": "Identity of Disclosing Party",
+          "instructions": "Extract the specific name of the healthcare facility, clinic, physician, or organization authorized to RELEASE or DISCLOSE the patient's medical records (the Disclosing Party).\n\nCarefully scan the document using this priority logic:\n\nAddressee/Header: Look for the primary facility named at the very top of the document, often in the letterhead or explicitly listed next to 'To:' or 'Facility Releasing Information'.\n\nAuthorization Clause: Look for the proper noun entity in phrases like 'I authorize [Discloser] to release...' or 'consent for [Discloser] to disclose...'.\n\nSTRICT EXCLUSIONS AND RULES:\n\nThe Recipient Trap: You MUST NOT extract the name of the party authorized to RECEIVE the records. Carefully distinguish between who is sending (the Discloser) and who is receiving (the Recipient).\n\nGeneric Terms: Extract the specific proper noun of the facility or doctor. Ignore generic boilerplate text like 'my health care provider', 'the hospital', or 'the undersigned' if a specific facility name is available elsewhere on the form.\n\nDo NOT extract the patient's name.",
+          "rule_set": null
+        },
+        {
+          "field_id": "2516ac5379221b9d",
+          "id": "630651f15ee728b8",
+          "field_type_id": "630651f15ee728b8",
+          "kind": "Date",
+          "name": "Date of Request",
+          "instructions": "Extract the date the authorization form was signed, initiated, or requested by the patient or representative.",
+          "rule_set": null
+        },
+        {
+          "field_id": "b9d59a506f3ce72d",
+          "id": "630651f15ee728b8",
+          "field_type_id": "630651f15ee728b8",
+          "kind": "Date",
+          "name": "Date Needed",
+          "instructions": "Extract the target date, deadline, or 'needed by' date for when the records must be delivered to the recipient.",
+          "rule_set": null
+        }
+      ]
+    },
+    {
+      "name": "Info Requested",
+      "id": "fe5dccfa05001c5c",
+      "moon_form": [
+        {
+          "field_id": "21ce31c8d14b5301",
+          "id": "856364449832b696",
+          "field_type_id": "856364449832b696",
+          "kind": "Exact Text",
+          "name": "Requested Info",
+          "instructions": "Extract all specific types of general medical records, documents, or imaging explicitly selected for release. STRICT RULES: 1. Only include standard records (e.g., X-Rays, Lab Results, History, Discharge Summaries). 2. STRICTLY IGNORE any highly sensitive 'Special Requests' or protected health information (e.g., HIV/AIDS, Mental Health, Substance Abuse). 3. Return a comma-separated list of selected items. If none, return null.",
+          "rule_set": null
+        },
+        {
+          "field_id": "e5d9677cbbef1388",
+          "id": "856364449832b696",
+          "field_type_id": "856364449832b696",
+          "kind": "Exact Text",
+          "name": "Special Request",
+          "instructions": "Extract all explicitly selected highly sensitive, specially protected, or 'Special Request' medical records authorized for release. STRICT RULES: 1. Only include protected categories (e.g., HIV/AIDS test results, Mental Health records, Substance Abuse treatment, Genetic testing). 2. STRICTLY IGNORE standard general medical records like X-rays or basic labs. 3. Return a comma-separated list of selected items. If none, return null.",
+          "rule_set": null
+        },
+        {
+          "field_id": "4012c015accd1ea2",
+          "id": "4df1983cf4aebeb4",
+          "field_type_id": "4df1983cf4aebeb4",
+          "kind": "Inferred Text",
+          "name": "Auth Expiry Date",
+          "instructions": "Determine the date this medical authorization expires by following this strict priority:\n\n1. First, look for an explicitly filled-in or written expiration date provided by the patient (e.g., 'will expire on [Date]'). If an exact date is written, extract it.\n\n2. If no explicit date is filled in, scan the document's legal clauses or fine print for a default expiration timeframe (e.g., 'expires one year from the date signed', 'valid for 6 months', 'expires in 90 days').\n\n3. If a default clause exists, locate the Date of Signature (or Date of Request). Calculate the exact expiration date by adding the default timeframe to the anchor date, and return that calculated date.\n\n4. CONDITIONAL CLAUSES: If the document provides a calculable timeframe alongside an abstract event (e.g., 'expires upon completion of review OR one year from signature, whichever comes first'), you MUST ignore the abstract event and calculate the exact date using the calculable timeframe.\n\nThe date outputted must be in YYYY-MM-DD format\n\nIf neither an explicit date nor a default clause exists, return null.",
+          "rule_set": null
+        },
+        {
+          "field_id": "8ebcad10795a3f9d",
+          "id": "856364449832b696",
+          "field_type_id": "856364449832b696",
+          "kind": "Exact Text",
+          "name": "PHI to be disclosed",
+          "instructions": "Scan the document for all medical records, documents, imaging, and highly sensitive health information authorized for release. Your objective is to extract a comprehensive, unified list of all requested items.\n\nCarefully evaluate how the document grants authorization and apply the correct logic:\n\n1. Checkbox Structure (Opt-In): Extract any standard records (e.g., MRI, X-Rays, Lab results, History) AND any sensitive protected records (e.g., Mental Health, Substance Abuse, HIV/AIDS) that are explicitly checked or marked. Strictly ignore any unchecked items.\n\n2. Blanket Clause Structure (Opt-Out): If the document uses a paragraph stating 'This authorization includes disclosure of...' followed by a list of items, extract ALL items listed in that sentence, MINUS any categories explicitly written in an 'exceptions' or 'exclude' section.\n\nSTRICT RULES:\n\n- Return a single, comma-separated list of all authorized items.\n\n- Do not include unselected boilerplate text.\n\n- If absolutely no records or categories are authorized or checked, return null.",
+          "rule_set": null
+        },
+        {
+          "field_id": "d4266ee9c88029e8",
+          "id": "c8aceb8c85990acd",
+          "field_type_id": "c8aceb8c85990acd",
+          "kind": "Boolean",
+          "name": "Right to Revoke",
+          "instructions": "Determine if the document explicitly outlines the patient's right to cancel, withdraw, or revoke this authorization.\n\nScan the legal boilerplate, terms and conditions, or patient rights sections for phrases such as 'right to revoke', 'may cancel this authorization', 'withdraw consent', or instructions on how to submit a revocation request.\n\nReturn 'True' if any clause acknowledging the patient's ability to revoke the authorization is present anywhere in the document.\nReturn 'False' ONLY if the document completely lacks any mention of the patient's right or ability to revoke the authorization.",
+          "rule_set": null
+        }
+      ]
+    },
+    {
+      "name": "Patient Details",
+      "id": "e222c6eddd5669e4",
+      "moon_form": [
+        {
+          "field_id": "ea0fc4ddb293c700",
+          "id": "856364449832b696",
+          "field_type_id": "856364449832b696",
+          "kind": "Exact Text",
+          "name": "Name",
+          "instructions": "Extract the full name of the patient whose medical records are being authorized for release. Do not confuse this with the receiving party.",
+          "rule_set": null
+        },
+        {
+          "field_id": "b003a3ddeaff274e",
+          "id": "630651f15ee728b8",
+          "field_type_id": "630651f15ee728b8",
+          "kind": "Date",
+          "name": "DOB",
+          "instructions": "Extract the patient's Date of Birth.",
+          "rule_set": null
+        },
+        {
+          "field_id": "d35e37cb0313d66e",
+          "id": "856364449832b696",
+          "field_type_id": "856364449832b696",
+          "kind": "Exact Text",
+          "name": "Address",
+          "instructions": "Extract the patient's full residential address. Include the street, city, state, and zip code.",
+          "rule_set": null
+        },
+        {
+          "field_id": "6ede88e26c268ca3",
+          "id": "856364449832b696",
+          "field_type_id": "856364449832b696",
+          "kind": "Exact Text",
+          "name": "Contact Number",
+          "instructions": "Extract the patient's primary contact phone number from the patient demographics section.\n\nSTRICT RULES:\n\n1. Semantic Anchor: The number MUST be directly associated with labels such as 'Primary Phone', 'Cell', 'Mobile', 'Home Phone', 'Daytime Ph', or 'Tel'.\n\n2. Priority Resolution: If multiple phone numbers are provided (e.g., both a Home and a Work number), extract the one explicitly marked as 'Primary'. If none are marked, prioritize in this order: 1) Cell/Mobile, 2) Home, 3) Daytime/Work.\n\n3. Format Constraint: The extracted value must mathematically and visually represent a standard phone number (e.g., 10 digits, formatted as (XXX) XXX-XXXX or XXX-XXX-XXXX).\n\n4. STRICT EXCLUSIONS: You MUST completely ignore numbers associated with 'Disability ID', 'SSN', 'Social Security', 'Member ID', 'Medicare', 'Medicaid', or 'Patient Account Number'.\n\n5. Output: Return only the requested phone number. If no valid phone number is explicitly provided, return null.",
+          "rule_set": null
+        },
+        {
+          "field_id": "d679bffc946487d8",
+          "id": "c8aceb8c85990acd",
+          "field_type_id": "c8aceb8c85990acd",
+          "kind": "Boolean",
+          "name": "Is Patient Signature Present",
+          "instructions": "Analyze the designated signature block for the 'Patient or Representative'. Your objective is strictly to determine if the document has been signed.\n\nReturn 'True' ONLY if you detect a distinct handwritten mark, cursive handwriting, squiggles, or an official digital e-signature stamp physically present on the signature line.\n\nReturn 'False' under ALL of the following conditions:\n\n- The signature line is blank.\n\n- The space contains only the letter 'X' or 'Sign Here' indicating where to sign.\n\n- The space contains ONLY standard typed or printed text (do not confuse the typed printed name with a handwritten signature).\n\nEvaluate strictly on the presence of a signature mark, not the presence of a typed name.",
+          "rule_set": null
+        },
+        {
+          "field_id": "940d5c4807af0fab",
+          "id": "630651f15ee728b8",
+          "field_type_id": "630651f15ee728b8",
+          "kind": "Date",
+          "name": "Signature Date",
+          "instructions": "Extract the date written immediately next to or below the patient's or representative's signature, indicating the exact date the authorization form was signed.",
+          "rule_set": null
+        },
+        {
+          "field_id": "999ce90aed28f53a",
+          "id": "4df1983cf4aebeb4",
+          "field_type_id": "4df1983cf4aebeb4",
+          "kind": "Inferred Text",
+          "name": "Printed Name of Signatory",
+          "instructions": "Examine the signature block at the bottom of the document. Locate the designated space or line for the typed or printed name of the person authorizing the document, typically located near the signature line.\n\nFollow this strict priority:\n\n1. If a clearly typed or printed name is present on or immediately next to the signature line, extract that printed value.\n\n2. If there is no printed name and only a handwritten signature is present, transcribe the handwritten ink to the best of your ability.\n\n3. If the specific space for the printed name is physically blank, you must return null, even if surrounding fields in the signature block are filled.\"\n\nReturn only the text in the signature field, and signature field only.",
+          "rule_set": null
+        },
+        {
+          "field_id": "5aa8244ab9faecde",
+          "id": "856364449832b696",
+          "field_type_id": "856364449832b696",
+          "kind": "Exact Text",
+          "name": "SSN",
+          "instructions": "Scan the patient details section for the individual's Social Security Number. Look for explicit labels such as 'Social Security Number', 'SSN', 'Social', or 'SS#'.\n\nExtract the value by applying the following strict logic:\n\nFull SSN: If a full 9-digit sequence is provided (with or without hyphens, e.g., XXX-XX-XXXX or XXXXXXXXX), extract the exact value.\n\nPartial SSN (Last 4): If the document explicitly asks for or provides only the 'Last 4 digits' (e.g., XXX-XX-1234 or just 1234), extract ONLY those 4 digits.\n\nSTRICT EXCLUSIONS AND RULES:\n\nThe Block-List: You MUST NOT extract the Medical Record Number (MRN), Telephone Number, Date of Birth, Account Number, or 9-digit Zip Codes (Zip+4).\n\nPattern Rejection: Do not extract a 10-digit phone number and mistake it for an SSN.\n\nIf the field is blank, marked as 'Refused', 'N/A', or 'On File', you must return null. Do not attempt to guess or substitute other numeric values.",
+          "rule_set": null
+        },
+        {
+          "field_id": "8a38e348788f8f25",
+          "id": "856364449832b696",
+          "field_type_id": "856364449832b696",
+          "kind": "Exact Text",
+          "name": "MRN",
+          "instructions": "Scan the patient details section for the individual's Medical Record Number. This is typically a unique numeric or alphanumeric sequence explicitly labeled as 'MRN', 'Medical Record #', 'Record Number', 'Patient ID', or 'Clinic #'. Extract ONLY the exact value associated with this label.\n\nSTRICT EXCLUSIONS AND RULES:\n\nThe Block-List: You MUST NOT extract the Social Security Number (SSN), Telephone Number, Date of Birth, Zip Code, or National Provider Identifier (NPI).\n\nPattern Rejection: If a number is formatted with hyphens like a standard SSN (e.g., XXX-XX-XXXX) or formatted as a standard 10-digit phone number, completely ignore it.\n\nAccount Numbers: Do NOT extract the billing 'Account Number' or 'Acct #' unless the document explicitly uses it interchangeably with the MRN.\n\nIf no value is explicitly labeled as the MRN, Record Number, or Patient ID, you must return null. Do not attempt to guess or substitute other numeric values.",
+          "rule_set": null
+        }
+      ]
+    }
+  ],
+  "_timezone": "UTC",
+  "_label_properties": [],
+  "_preferred_locales": {
+    "default": "en_GB",
+    "preferences": []
+  },
+  "_dataset_flags": [
+    "ixp"
+  ],
+  "_model_config": {
+    "kind": "gpt_ixp",
+    "model_version": "gpt_4o_2024_05_13",
+    "input_config": {
+      "mode": "image_only"
+    },
+    "system_prompt_override": "",
+    "frequency_penalty": null,
+    "temperature": 0.2,
+    "top_p": null,
+    "seed": 11994,
+    "flags": [
+      "append_field_descriptions",
+      "append_group_descriptions",
+      "append_type_descriptions"
+    ],
+    "iterative_config": {
+      "max_num_calls": null,
+      "chunk_size": null
+    },
+    "attribution_method": "word_ids"
+  }
+}
